@@ -1,0 +1,39 @@
+public class TreeNode {
+     int val;
+     TreeNode left;
+      TreeNode right;
+      TreeNode() {}
+      TreeNode(int val) { this.val = val; }
+      TreeNode(int val, TreeNode left, TreeNode right) {
+          this.val = val;
+          this.left = left;
+          this.right = right;
+      }
+  }
+
+ class Solution {
+    // Method to check if the tree is balanced by calculating the height difference
+    public int checkNum(TreeNode root) {
+        if (root == null) {
+            return 0;  // Base case: height of null node is 0
+        }
+        int lh = checkNum(root.left);  // Calculate left subtree height
+        if (lh == -1) {
+            return -1;  // If left subtree is unbalanced, propagate -1 upwards
+        }
+        int rh = checkNum(root.right);  // Calculate right subtree height
+        if (rh == -1) {
+            return -1;  // If right subtree is unbalanced, propagate -1 upwards
+        }
+        if (Math.abs(lh - rh) > 1) {
+            return -1;  // If height difference is more than 1, tree is unbalanced
+        } else {
+            return Math.max(lh, rh) + 1;  // Return the height of the tree
+        }
+    }
+    
+    // Method to determine if the tree is balanced
+    public boolean isBalanced(TreeNode root) {
+        return checkNum(root) != -1;  // If checkNum returns -1, the tree is unbalanced
+    }
+}
