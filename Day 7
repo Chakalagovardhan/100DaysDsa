@@ -1,0 +1,48 @@
+public class TreeNode {
+     int val;
+     TreeNode left;
+      TreeNode right;
+      TreeNode() {}
+      TreeNode(int val) { this.val = val; }
+      TreeNode(int val, TreeNode left, TreeNode right) {
+          this.val = val;
+          this.left = left;
+          this.right = right;
+      }
+  }
+
+class Solution {
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> result = new ArrayList<>();  // To store the rightmost nodes
+        if (root == null) {
+            return result;  // If the tree is empty, return an empty list
+        }
+        
+        Queue<TreeNode> queue = new LinkedList<>();  // Queue for BFS traversal
+        queue.add(root);
+        
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();  // Number of nodes at the current level
+            
+            // Traverse each level
+            for (int i = 0; i < levelSize; i++) {
+                TreeNode node = queue.poll();
+                
+                // If it's the last node at the current level, add its value to the result
+                if (i == levelSize - 1) {
+                    result.add(node.val);
+                }
+                
+                // Add the left and right children to the queue for the next level
+                if (node.left != null) {
+                    queue.add(node.left);
+                }
+                if (node.right != null) {
+                    queue.add(node.right);
+                }
+            }
+        }
+        
+        return result;
+    }
+}
