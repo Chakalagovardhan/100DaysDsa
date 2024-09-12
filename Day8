@@ -1,0 +1,29 @@
+// TreeNode class definition
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    TreeNode(int val) {
+        this.val = val;
+    }
+}
+
+public class Solution {
+    
+    // Function to find the node in the BST with value val and return the subtree
+    public TreeNode searchBST(TreeNode root, int val) {
+        // If root is null or the root's value matches val, return root
+        if (root == null || root.val == val) {
+            return root;
+        }
+        
+        // If val is less than root's value, search in the left subtree
+        if (val < root.val) {
+            return searchBST(root.left, val);
+        }
+        
+        // If val is greater than root's value, search in the right subtree
+        return searchBST(root.right, val);
+    }
+}
