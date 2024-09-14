@@ -1,0 +1,47 @@
+class Node{
+  int data;
+  Node left,right;
+  Node(int data)
+  {
+    this.data=data;
+    left=right=null;
+  }
+}
+
+class Solution {
+    // Function to insert a node in a BST.
+    Node insert(Node root, int Key) {
+        // your code here
+        Node temp=new Node(Key);
+        Node parent=null,curr=root;
+        while(curr != null)
+        {
+            parent=curr;
+            if(curr.data>Key)
+            {
+                curr=curr.left;
+            }
+            else if(curr.data<Key)
+            {
+                curr=curr.right;
+            }
+            else{
+                return root;
+            }
+        }
+        
+        if(parent==null)
+        {
+            return temp;
+        }
+        if(parent.data>Key)
+        {
+            parent.left=temp;
+        }
+        else{
+            parent.right=temp;
+        }
+        
+        return root;
+    }
+}
