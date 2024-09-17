@@ -1,0 +1,33 @@
+class TreeNode {
+    int val;
+    TreeNode left;
+    TreeNode right;
+
+    TreeNode(int val) {
+        this.val = val;
+    }
+}
+public class Solution {
+    private Integer prev = null;  // Non-static, to avoid issues across multiple calls
+
+    public boolean isValidBST(TreeNode root) {
+        return checkBST(root);
+    }
+
+    private boolean checkBST(TreeNode root) {
+        if (root == null)  
+            return true;  
+
+        // In-order traversal: left-root-right
+        if (!checkBST(root.left)) 
+            return false;
+
+        // Check if current node's value is greater than the previous node's value
+        if (prev != null && root.val <= prev) 
+            return false;
+        
+        prev = root.val;  // Update prev to current value
+        
+        return checkBST(root.right);  // Continue to right subtree
+    }
+}
