@@ -1,0 +1,95 @@
+class MinHeap {
+    int[] harr; // Heap array
+    int capacity; // Maximum possible size of the min heap
+    int heap_size; // Current number of elements in the min heap
+
+    // Constructor to initialize the heap with a given capacity
+    MinHeap(int cap) {
+        heap_size = 0;
+        capacity = cap;
+        harr = new int[cap];
+    }
+
+    int parent(int i) { return (i - 1) / 2; }
+    int left(int i) { return (2 * i + 1); }
+    int right(int i) { return (2 * i + 2); }
+
+    // Function to extract the minimum value in the heap
+    int extractMin() {
+        if (heap_size <= 0) {
+            return -1; // Return -1 if the heap is empty
+        }
+        if (heap_size == 1) {
+            heap_size--; // If only one element is present
+            return harr[0];
+        }
+
+        // Store the minimum value and remove it
+        int root = harr[0];
+        harr[0] = harr[heap_size - 1]; // Move the last element to the root
+        heap_size--; // Reduce the heap size
+        MinHeapify(0); // Call minHeapify on the root
+
+        return root; // Return the minimum value
+    }
+
+    // Function to insert a value into the heap
+    void insertKey(int k) {
+        if (heap_size == capacity) {
+            System.out.println("Overflow: Could not insert key");
+            return;
+        }
+
+        heap_size++;
+        int i = heap_size - 1;
+        harr[i] = k; // Insert the new key at the end
+
+        // Fix the min heap property if violated
+        while (i != 0 && harr[parent(i)] > harr[i]) {
+            int temp = harr[i];
+            harr[i] = harr[parent(i)];
+            harr[parent(i)] = temp;
+            i = parent(i);
+        }
+    }
+
+    // Function to delete a key at index i
+    void deleteKey(int i) {
+        if (i < heap_size) {
+            decreaseKey(i, Integer.MIN_VALUE); // Decrease the key to minimum
+            extractMin(); // Remove the minimum element
+        }
+    }
+
+    // Function to decrease the value of a key at index i
+    void decreaseKey(int i, int new_val) {
+        harr[i] = new_val;
+        while (i != 0 && harr[parent(i)] > harr[i]) {
+            int temp = harr[i];
+            harr[i] = harr[parent(i)];
+            harr[parent(i)] = temp;
+            i = parent(i);
+        }
+    }
+
+    // Function to heapify the subtree rooted at index i
+    void MinHeapify(int i) {
+        int l = left(i);
+        int r = right(i);
+        int smallest = i;
+        if (l < heap_size && harr[l] < harr[i]) {
+            smallest = l;
+        }
+        if (r < heap_size && harr[r] < harr[smallest]) {
+            smallest = r;
+        }
+        if (smallest != i) {
+            int temp = harr[i];
+            harr[i] = harr[smallest];
+            harr[smallest] = temp;
+            MinHeapify(smallest);
+        }
+    }
+}
+
+
