@@ -1,0 +1,82 @@
+class Solution
+{
+    // Function to find number of strongly connected components in the graph.
+    public int kosaraju(int V, ArrayList<ArrayList<Integer>> adj)
+    {
+        // Step 1: Perform DFS to fill stack with vertices based on finish time
+        Stack<Integer> stack = new Stack<>();
+        boolean[] visited = new boolean[V];
+        
+        // Perform DFS for each vertex and fill the stack
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                dfsFillStack(i, adj, visited, stack);
+            }
+        }
+
+        // Step 2: Transpose the graph
+        ArrayList<ArrayList<Integer>> transposeGraph = transpose(V, adj);
+
+        // Step 3: Perform DFS on the transposed graph in the order of the stack
+        visited = new boolean[V];
+        int sccCount = 0;
+        
+        while (!stack.isEmpty()) {
+            int node = stack.pop();
+            
+            // If the node is not visited in the transpose DFS, it's a new SCC
+            if (!visited[node]) {
+                sccCount++;
+                dfsTranspose(node, transposeGraph, visited);
+            }
+        }
+        
+        return sccCount;
+    }
+
+    // Helper method to perform DFS and fill the stack
+    private void dfsFillStack(int node, ArrayList<ArrayList<Integer>> adj, boolean[] visited, Stack<Integer> stack) {
+        visited[node] = true;
+        
+        // Visit all neighbors
+        for (int neighbor : adj.get(node)) {
+            if (!visited[neighbor]) {
+                dfsFillStack(neighbor, adj, visited, stack);
+            }
+        }
+        
+        // Push the node to the stack after DFS completes
+        stack.push(node);
+    }
+
+    // Helper method to transpose the graph
+    private ArrayList<ArrayList<Integer>> transpose(int V, ArrayList<ArrayList<Integer>> adj) {
+        ArrayList<ArrayList<Integer>> transposeGraph = new ArrayList<>();
+        
+        // Initialize the transpose graph with empty lists
+        for (int i = 0; i < V; i++) {
+            transposeGraph.add(new ArrayList<>());
+        }
+        
+        // Reverse the edges
+        for (int i = 0; i < V; i++) {
+            for (int neighbor : adj.get(i)) {
+                transposeGraph.get(neighbor).add(i);
+            }
+        }
+        
+        return transposeGraph;
+    }
+
+    // Helper method to perform DFS on the transposed graph
+    private void dfsTranspose(int node, ArrayList<ArrayList<Integer>> transposeGraph, boolean[] visited) {
+        visited[node] = true;
+        
+        // Visit all neighbors in the transposed graph
+        for (int neighbor : transposeGraph.get(node)) {
+            if (!visited[neighbor]) {
+                dfsTranspose(neighbor, transposeGraph, visited);
+            }
+        }
+    }
+}
