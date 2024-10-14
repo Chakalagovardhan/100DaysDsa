@@ -1,0 +1,59 @@
+import java.util.*;
+
+class Solution {
+    // Direction vectors for moving up, down, left, right.
+    private int[] dRow = {-1, 1, 0, 0};
+    private int[] dCol = {0, 0, -1, 1};
+    
+    // Function to find minimum time required to rot all oranges. 
+    public int orangesRotting(int[][] grid) {
+        if (grid == null || grid.length == 0) return -1;
+        
+        int rows = grid.length;
+        int cols = grid[0].length;
+        Queue<int[]> queue = new LinkedList<>();
+        int freshOranges = 0;
+        
+        // Enqueue all initially rotten oranges and count fresh oranges.
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (grid[i][j] == 2) {
+                    queue.offer(new int[]{i, j, 0}); // {row, col, time}
+                } else if (grid[i][j] == 1) {
+                    freshOranges++;
+                }
+            }
+        }
+        
+        // If there are no fresh oranges, return 0 (all are already rotten).
+        if (freshOranges == 0) return 0;
+        
+        int time = 0;
+        
+        // BFS to rot all fresh oranges.
+        while (!queue.isEmpty()) {
+            int[] current = queue.poll();
+            int row = current[0];
+            int col = current[1];
+            time = current[2];
+            
+            // Check all 4 possible directions (up, down, left, right).
+            for (int i = 0; i < 4; i++) {
+                int newRow = row + dRow[i];
+                int newCol = col + dCol[i];
+                
+                // If the new position is within bounds and has a fresh orange.
+                if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols && grid[newRow][newCol] == 1) {
+                    // Rot the fresh orange.
+                    grid[newRow][newCol] = 2;
+                    freshOranges--;
+                    // Enqueue the newly rotten orange with incremented time.
+                    queue.offer(new int[]{newRow, newCol, time + 1});
+                }
+            }
+        }
+        
+        // If there are still fresh oranges left, return -1.
+        return freshOranges == 0 ? time : -1;
+    }
+}
