@@ -1,0 +1,57 @@
+import java.util.*;
+
+class Solution {
+    // Function to find if the given edge is a bridge in the graph.
+    static int isBridge(int V, ArrayList<ArrayList<Integer>> adj, int c, int d) {
+        // Step 1: Count the number of connected components initially
+        boolean[] visited = new boolean[V];
+        int initialComponents = countComponents(V, adj, visited);
+
+        // Step 2: Remove edge (c, d) by removing both directions from the adjacency list
+        removeEdge(adj, c, d);
+
+        // Step 3: Count the number of connected components after removing the edge
+        visited = new boolean[V];  // Reset visited array
+        int newComponents = countComponents(V, adj, visited);
+
+        // Step 4: Restore the edge (for integrity)
+        addEdge(adj, c, d);
+
+        // If the number of components increases after removing the edge, it's a bridge
+        return (newComponents > initialComponents) ? 1 : 0;
+    }
+
+    // Function to count the number of connected components using DFS
+    static int countComponents(int V, ArrayList<ArrayList<Integer>> adj, boolean[] visited) {
+        int components = 0;
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+                components++;
+                dfs(i, adj, visited);
+            }
+        }
+        return components;
+    }
+
+    // Depth First Search to mark all vertices in the same component
+    static void dfs(int node, ArrayList<ArrayList<Integer>> adj, boolean[] visited) {
+        visited[node] = true;
+        for (int neighbor : adj.get(node)) {
+            if (!visited[neighbor]) {
+                dfs(neighbor, adj, visited);
+            }
+        }
+    }
+
+    // Function to remove an edge from the graph
+    static void removeEdge(ArrayList<ArrayList<Integer>> adj, int c, int d) {
+        adj.get(c).remove(Integer.valueOf(d));
+        adj.get(d).remove(Integer.valueOf(c));
+    }
+
+    // Function to add an edge to the graph (to restore the graph after checking)
+    static void addEdge(ArrayList<ArrayList<Integer>> adj, int c, int d) {
+        adj.get(c).add(d);
+        adj.get(d).add(c);
+    }
+}
