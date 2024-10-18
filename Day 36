@@ -1,0 +1,59 @@
+
+
+class Solution
+{
+    // Class to store the position of the Knight and the number of moves to reach there.
+    static class Cell {
+        int x, y, dist;
+        public Cell(int x, int y, int dist) {
+            this.x = x;
+            this.y = y;
+            this.dist = dist;
+        }
+    }
+
+    // 8 possible movements for a knight
+    static int[] dx = {-2, -1, 1, 2, 2, 1, -1, -2};
+    static int[] dy = {1, 2, 2, 1, -1, -2, -2, -1};
+
+    // Function to check if the position is inside the board and not visited
+    static boolean isInside(int x, int y, int N) {
+        return (x >= 1 && x <= N && y >= 1 && y <= N);
+    }
+
+    // Function to find out the minimum steps Knight needs to reach target position
+    public int minStepToReachTarget(int KnightPos[], int TargetPos[], int N) {
+        // BFS queue
+        Queue<Cell> q = new LinkedList<>();
+
+        // Starting position of the knight
+        q.add(new Cell(KnightPos[0], KnightPos[1], 0));
+
+        // Visited array to keep track of visited positions
+        boolean[][] visited = new boolean[N+1][N+1];
+        visited[KnightPos[0]][KnightPos[1]] = true;
+
+        // Loop until the queue is empty
+        while (!q.isEmpty()) {
+            Cell curr = q.poll();
+
+            // If current cell is the target position, return the distance
+            if (curr.x == TargetPos[0] && curr.y == TargetPos[1]) {
+                return curr.dist;
+            }
+
+            // Explore all 8 possible moves for the knight
+            for (int i = 0; i < 8; i++) {
+                int newX = curr.x + dx[i];
+                int newY = curr.y + dy[i];
+
+                // If the new position is valid and not visited
+                if (isInside(newX, newY, N) && !visited[newX][newY]) {
+                    visited[newX][newY] = true;
+                    q.add(new Cell(newX, newY, curr.dist + 1));
+                }
+            }
+        }
+        return -1; // if target is unreachable
+    }
+}
