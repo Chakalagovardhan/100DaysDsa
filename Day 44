@@ -1,0 +1,28 @@
+class BlackAndWhite {
+    static final int MOD = 1000000007;
+
+    static long numOfWays(int N, int M) {
+        long totalSquares = N * M;
+        long totalWays = (totalSquares * (totalSquares - 1)) % MOD;
+        long attackingPairs = 0;
+
+        int[][] moves = {{2, 1}, {2, -1}, {-2, 1}, {-2, -1},
+                         {1, 2}, {1, -2}, {-1, 2}, {-1, -2}};
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                for (int[] move : moves) {
+                    int newX = i + move[0];
+                    int newY = j + move[1];
+                    if (newX >= 0 && newX < N && newY >= 0 && newY < M) {
+                        attackingPairs++;
+                    }
+                }
+            }
+        }
+
+        long nonAttackingWays = (totalWays - attackingPairs + MOD) % MOD;
+        return nonAttackingWays;
+    }
+}
+
