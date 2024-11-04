@@ -1,0 +1,42 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+class Solution {
+    // Function to return a list of lists denoting the required 
+    // combinations whose sum is equal to the given number.
+    static void findCombination(int index, int target, ArrayList<Integer> given, 
+                                List<ArrayList<Integer>> finals, ArrayList<Integer> addingArray) {
+        // If target is met, add the current combination to results
+        if (target == 0) {
+            finals.add(new ArrayList<>(addingArray));
+            return;
+        }
+
+        // Base case for recursion limit
+        if (index == given.size()) return;
+
+        // Pick the current element if it doesn't exceed the target
+        if (given.get(index) <= target) {
+            addingArray.add(given.get(index));
+            // Same element can be picked again, hence call with the same index
+            findCombination(index, target - given.get(index), given, finals, addingArray);
+            addingArray.remove(addingArray.size() - 1); // Backtrack
+        }
+
+        // Move to the next index
+        findCombination(index + 1, target, given, finals, addingArray);
+    }
+
+    static ArrayList<ArrayList<Integer>> combinationSum(ArrayList<Integer> A, int B) {
+        List<ArrayList<Integer>> last = new ArrayList<>();
+        // Remove duplicates and sort the list
+        ArrayList<Integer> uniqueSorted = new ArrayList<>(new java.util.HashSet<>(A));
+        Collections.sort(uniqueSorted);
+
+        findCombination(0, B, uniqueSorted, last, new ArrayList<>());
+        
+        // Return result as ArrayList
+        return new ArrayList<>(last);
+    }
+}
