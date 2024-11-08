@@ -1,0 +1,43 @@
+class Solution {
+    // Function to find the minimum number of coins to make the change 
+    // for value using the coins of given denominations.
+    public long minimumNumberOfCoins(int coins[], int numberOfCoins, int value) {
+        // Edge case: if value is 0, no coins are needed.
+        if (value == 0) {
+            return 0;
+        }
+
+        // Initialize a 2D array to store the minimum number of coins needed.
+        long[][] currency = new long[numberOfCoins + 1][value + 1];
+
+        // Fill the matrix with a large value initially.
+        for (int i = 0; i <= numberOfCoins; i++) {
+            for (int j = 0; j <= value; j++) {
+                currency[i][j] = Integer.MAX_VALUE;
+            }
+        }
+
+        // If the value is 0, 0 coins are required.
+        for (int i = 0; i <= numberOfCoins; i++) {
+            currency[i][0] = 0;
+        }
+
+        // Fill the DP table.
+        for (int i = 1; i <= numberOfCoins; i++) {
+            for (int j = 1; j <= value; j++) {
+                // If the coin's denomination is less than or equal to the current value.
+                if (coins[i - 1] <= j) {
+                    currency[i][j] = Math.min(currency[i - 1][j], 1 + currency[i][j - coins[i - 1]]);
+                } else {
+                    currency[i][j] = currency[i - 1][j];
+                }
+            }
+        }
+
+        // The answer will be in the last cell of the matrix.
+        long result = currency[numberOfCoins][value];
+
+        // If the result is still Integer.MAX_VALUE, it means it's not possible to make the change.
+        return result == Integer.MAX_VALUE ? -1 : result;
+    }
+}
