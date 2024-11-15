@@ -1,0 +1,57 @@
+class Solution {
+    // Function to find the minimum number of attempts needed to find the critical floor.
+    static int eggDrop(int n, int k) {
+        // Initialize a 2D array to store the results.
+        int[][] dp = new int[n + 1][k + 1];
+
+        // If there is only one egg, we need to try every floor sequentially.
+        for (int i = 1; i <= k; i++) {
+            dp[1][i] = i;
+        }
+
+        // If there are zero floors, zero attempts are needed.
+        // If there is one floor, one attempt is needed.
+        for (int i = 1; i <= n; i++) {
+            dp[i][0] = 0;
+            dp[i][1] = 1;
+        }
+
+        // Fill the dp table using binary search for optimization
+        for (int i = 2; i <= n; i++) { // Iterate over eggs
+            for (int j = 2; j <= k; j++) { // Iterate over floors
+                dp[i][j] = Integer.MAX_VALUE;
+                int low = 1, high = j;
+
+                // Use binary search to find the optimal floor to drop the egg
+                while (low <= high) {
+                    int mid = (low + high) / 2;
+                    int breakEgg = dp[i - 1][mid - 1];  // Egg breaks
+                    int notBreakEgg = dp[i][j - mid];   // Egg does not break
+
+                    // We want to minimize the worst-case scenario
+                    int attempts = 1 + Math.max(breakEgg, notBreakEgg);
+
+                    // Update the minimum attempts
+                    dp[i][j] = Math.min(dp[i][j], attempts);
+
+                    // Adjust binary search bounds
+                    if (breakEgg > notBreakEgg) {
+                        high = mid - 1;
+                    } else {
+                        low = mid + 1;
+                    }
+                }
+            }
+        }
+
+        // Return the minimum number of attempts for n eggs and k floors
+        return dp[n][k];
+    }
+
+    // Driver code for testing
+    public static void main(String[] args) {
+        System.out.println(eggDrop(2, 10)); // Expected Output: 4
+        System.out.println(eggDrop(1, 2));  // Expected Output: 2
+        System.out.println(eggDrop(10, 5)); // Expected Output: 3
+    }
+}
