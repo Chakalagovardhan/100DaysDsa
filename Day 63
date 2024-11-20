@@ -1,0 +1,31 @@
+class Solution {
+    public int countWays(String s) {
+        // code here
+        int size=s.length();
+        int dp[] = new int[size+1];
+        dp[0]=1;
+        dp[1]=s.charAt(0)=='0'?0:1;
+        for(int i=2;i<=size;i++)
+        {
+            int firstNumber=Integer.valueOf(s.substring(i-1,i));
+            int secondNumber=Integer.valueOf(s.substring(i-2,i));
+            
+            if(firstNumber>=1)
+            dp[i]+=dp[i-1];
+            if(secondNumber>=10 && secondNumber <=26)
+            dp[i] +=dp[i-2];
+        }
+        return dp[size];
+        
+    }
+}
+Example1:-
+Input: s = "123"
+Output: 3
+Explanation: "123" can be decoded as "ABC"(123),
+"LC"(12 3) and "AW"(1 23).
+
+Example2:-
+Input: s = "90"
+Output: 0
+Explanation: "90" cannot be decoded as it's an invalid string and we cannot decode '0'.
