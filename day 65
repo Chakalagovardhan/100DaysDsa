@@ -1,0 +1,33 @@
+class Solution 
+{
+    public boolean findPartition(int[] arr, int n)
+    {
+        // Step 1: Calculate the total sum of the array
+        int totalSum = 0;
+        for (int num : arr) {
+            totalSum += num;
+        }
+        
+        // Step 2: If the total sum is odd, partition is not possible
+        if (totalSum % 2 != 0) {
+            return false;
+        }
+        
+        // Step 3: Define the target sum for one subset
+        int target = totalSum / 2;
+        
+        // Step 4: Initialize a DP array
+        boolean[] dp = new boolean[target + 1];
+        dp[0] = true; // A sum of 0 is always possible
+        
+        // Step 5: Fill the DP array
+        for (int num : arr) {
+            for (int j = target; j >= num; j--) {
+                dp[j] = dp[j] || dp[j - num];
+            }
+        }
+        
+        // Step 6: Check if the target sum is achievable
+        return dp[target];
+    }
+}
