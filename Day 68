@@ -1,0 +1,83 @@
+class TrieNode {
+    final int alphabetSize = 26;
+    TrieNode[] children = new TrieNode[alphabetSize];
+    boolean isEndOfWord;
+
+    TrieNode() {
+        isEndOfWord = false;
+        Arrays.fill(children, null);
+    }
+}
+
+class Solution {
+
+    private TrieNode root;
+
+    Solution() {
+        root = new TrieNode();
+    }
+
+    public String longestCommonPrefix(String arr[]) {
+        // Edge case: if input is empty or contains no words
+        if (arr == null || arr.length == 0) {
+            return "";
+        }
+
+        // Insert each string into the Trie
+        for (String str : arr) {
+            insert(str.toLowerCase());
+        }
+
+        // Search for the longest common prefix
+        return search();
+    }
+
+    public void insert(String str) {
+        TrieNode pcrawal = root;
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+
+            // Skip invalid characters (non-alphabetic)
+            if (c < 'a' || c > 'z') continue;
+
+            int index = c - 'a';
+            if (pcrawal.children[index] == null) {
+                pcrawal.children[index] = new TrieNode();
+            }
+            pcrawal = pcrawal.children[index];
+        }
+        pcrawal.isEndOfWord = true;
+    }
+
+    public String search() {
+        StringBuilder prefix = new StringBuilder();
+        TrieNode pcrawal = root;
+
+        while (true) {
+            int childCount = 0;
+            int childIndex = -1;
+
+            // Find the child that exists in the current node
+            for (int i = 0; i < 26; i++) {
+                if (pcrawal.children[i] != null) {
+                    childCount++;
+                    childIndex = i;
+                }
+            }
+
+            // If there is more than one child or it's the end of a word, stop
+            if (childCount != 1 || pcrawal.isEndOfWord) {
+                break;
+            }
+
+            // Append the character corresponding to the child
+            prefix.append((char) ('a' + childIndex));
+            pcrawal = pcrawal.children[childIndex];
+        }
+
+        return prefix.toString();
+    }
+}
+
+
+
