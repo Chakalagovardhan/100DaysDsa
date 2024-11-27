@@ -1,0 +1,55 @@
+class Solution {
+    static class TrieNode {
+        TrieNode[] children = new TrieNode[2]; 
+    }
+
+    public int findMaximumXOR(int[] nums) {
+        TrieNode root = new TrieNode();
+
+       
+        for (int num : nums) {
+            insert(root, num);
+        }
+
+        int maxXor = 0;
+
+     
+        for (int num : nums) {
+            maxXor = Math.max(maxXor, findMaxXor(root, num));
+        }
+
+        return maxXor;
+    }
+
+    private void insert(TrieNode root, int num) {
+        TrieNode node = root;
+
+        // Insert 32 bits of the number into the Trie (MSB to LSB)
+        for (int i = 31; i >= 0; i--) {
+            int bit = (num >> i) & 1; // Extract the i-th bit
+            if (node.children[bit] == null) {
+                node.children[bit] = new TrieNode();
+            }
+            node = node.children[bit];
+        }
+    }
+
+    private int findMaxXor(TrieNode root, int num) {
+        TrieNode node = root;
+        int maxXor = 0;
+
+        // Traverse the Trie to maximize XOR
+        for (int i = 31; i >= 0; i--) {
+            int bit = (num >> i) & 1; // Extract the i-th bit
+            int oppositeBit = 1 - bit; // Look for the opposite bit to maximize XOR
+            if (node.children[oppositeBit] != null) {
+                maxXor |= (1 << i); // Add this bit to the result
+                node = node.children[oppositeBit];
+            } else {
+                node = node.children[bit]; // Follow the available path
+            }
+        }
+
+        return maxXor;
+    }
+}
